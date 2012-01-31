@@ -37,6 +37,7 @@ require 'omf-common/hash-ext'
 require 'omf-common/omfVersion'
 require 'omf-resctl/omf_agent/rcCommunicator'
 require 'omf-resctl/omf_agent/agentCommands'
+require 'omf-resctl/util'
 
 #
 # This class defines the Node Agent (NA) entity, which is a daemon
@@ -426,26 +427,13 @@ end
 
 lspci=lsusb=nil
 
-if (File.exist?("/usr/bin/lspci"))
-  # Debian/Ubuntu
-  lspci="/usr/bin/lspci"
-elsif (File.exist?("/sbin/lspci"))
-  # Fedora
-  lspci="/sbin/lspci"
-else
+lspci = findBinary("lspci")
+unless lspci
   MObject.info "lspci not found, unable to detect the wireless hardware. Please install the 'pciutils' package."
 end
 
-if (File.exist?("/usr/bin/lsusb"))
-  # Debian/Ubuntu
-  lsusb="/usr/bin/lsusb"
-elsif (File.exist?("/usr/sbin/lsusb"))
-  # older Debian/Ubuntu
-  lsusb="/usr/sbin/lsusb"
-elsif (File.exist?("/sbin/lsusb"))
-  # Fedora
-  lsusb="/sbin/lsusb"
-else
+lsusb = findBinary("lsusb")
+unless lsusb
   MObject.info "lsusb not found, unable to detect the wireless hardware. Please install the 'usbutils' package."
 end
 
