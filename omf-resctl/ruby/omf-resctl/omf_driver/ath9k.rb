@@ -115,8 +115,8 @@ class Ath9kDevice < WirelessDevice
     @wpapid = "/tmp/wpa.#{@deviceName}.pid"
     @type = @mode = @channel = @frequency = @essid = nil
     @baseDevice = case
-      when @deviceName == 'wlan0' : 'phy0'
-      when @deviceName == 'wlan1' : 'phy1'
+      when @deviceName == 'wlan0' then 'phy0'
+      when @deviceName == 'wlan1' then 'phy1'
     else
       raise "Unknown device name '#{@deviceName}'."
     end
@@ -187,11 +187,11 @@ class Ath9kDevice < WirelessDevice
 
       when "mode"
         @mode = case
-          when value.downcase == 'master' : :master
-          when value.downcase == 'managed' : :managed
-          when value.downcase == 'ad-hoc' : :adhoc
-          when value.downcase == 'adhoc' : :adhoc
-          when value.downcase == 'monitor' : :monitor
+          when value.downcase == 'master' then :master
+          when value.downcase == 'managed' then :managed
+          when value.downcase == 'ad-hoc' then :adhoc
+          when value.downcase == 'adhoc' then :adhoc
+          when value.downcase == 'monitor' then :monitor
           else
             raise "Unknown mode '#{value}'. Should be 'master', 'managed', "+
                   "'adhoc', or monitor."
