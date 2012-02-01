@@ -34,6 +34,7 @@
 
 require 'omf-common/mobject'
 require 'omf-common/execApp'
+require 'omf-resctl/util'
 #require 'omf-resctl/omf_driver/aironet'
 require 'omf-resctl/omf_driver/ethernet'
 require 'omf-resctl/omf_agent/nodeAgent'
@@ -52,14 +53,14 @@ module AgentCommands
   # We might want to have these config values passed as parameters later
   #
   # Slave Resource Controller 
-  SLAVE_RC_CMD = "/usr/sbin/omf-resctl-#{OMF_MM_VERSION}"
+  SLAVE_RC_CMD = findBinary("omf-resctl-#{OMF_MM_VERSION}"
   SLAVE_RC_CFG = "/etc/omf-resctl-#{OMF_MM_VERSION}/omf-resctl.local.yaml"
   SLAVE_RC_LOG = "/etc/omf-resctl-#{OMF_MM_VERSION}/omf-resctl.local.xml"
   # Slave Experiment Controller
-  SLAVE_EC_CMD = "/usr/bin/omf-#{OMF_MM_VERSION} exec"
+  SLAVE_EC_CMD = findBinary("omf-#{OMF_MM_VERSION}") + " exec"
   SLAVE_EC_CFG = "/etc/omf-expctl-#{OMF_MM_VERSION}/omf-expctl.local.yaml"
   # Proxy OML Collection Server
-  OML_PROXY_CMD = "/usr/bin/oml2-proxy-server"
+  OML_PROXY_CMD = findBinary('oml2-proxy-server')
   OML_PROXY_PORT = "9001"
   OML_PROXY_ADDR = "127.0.0.1"
   OML_PROXY_CACHE = "/tmp/oml-proxy-cache"
@@ -71,8 +72,8 @@ module AgentCommands
     'net/e1' => EthernetDevice.new('net/e1', 'eth1')
   }
   
-  SHRINKPART = "/usr/sbin/shrinkpart-#{OMF_MM_VERSION}.sh"
-  GROWPART = "/usr/sbin/growpart-#{OMF_MM_VERSION}.sh"
+  SHRINKPART = findBinary("shrinkpart-#{OMF_MM_VERSION}.sh")
+  GROWPART = findBinary("growpart-#{OMF_MM_VERSION}.sh")
 
   # 
   # Return the Application ID for the OML Proxy Collection Server
@@ -423,11 +424,12 @@ module AgentCommands
   def AgentCommands.REBOOT(communicator, command)
     communicator.stop
     sleep 2
-    cmd = `sudo /sbin/reboot`
+    reboot = findBinary('reboot')
+    cmd = `sudo #{reboot}`
     if !$?.success?
       # In case 'sudo' is not installed but we do have root rights 
       # (e.g. PXE image)
-      cmd = `/sbin/reboot`
+      cmd = `#{reboot}`
     end
   end
 
@@ -441,8 +443,9 @@ module AgentCommands
   def AgentCommands.MODPROBE(communicator, command)
     moduleName = command.appID
     id = "module/#{moduleName}"
+    modprobe = findBinary('modprobe')
     ExecApp.new(id, controller, 
-                "/sbin/modprobe #{argArray.join(' ')} #{moduleName}")
+                "#{modprobe} #{argArray.join(' ')} #{moduleName}")
   end
 
   #
