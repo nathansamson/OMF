@@ -41,6 +41,8 @@
 # itself, so that your own substitution method can access the agent's attributes and
 # methods to build your own substitute string
 
+require 'socket'
+
 module AgentSubstitutions
 
   # Substitute '%index%' with the unique index number that was assigned to this agent
@@ -48,9 +50,9 @@ module AgentSubstitutions
     return controller.index
   end
 
-  # Substitute '%hostname%' with the hostname of this agent as given by /bin/hostname
+  # Substitute '%hostname%' with the hostname of this agent
   def AgentSubstitutions.hostname(controller)
-    return `/bin/hostname`.chomp
+    return Socket.gethostname
   end
 
   # FOR WINLAB...
