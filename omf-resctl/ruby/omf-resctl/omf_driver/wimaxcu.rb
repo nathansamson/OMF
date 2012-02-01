@@ -27,6 +27,7 @@
 # This file defines the class WimaxcuDevice which is a sub-class of 
 # WirelessDevice.
 #
+require 'omf-resctl/util'
 require 'omf-resctl/omf_driver/wimax'
 
 #
@@ -47,7 +48,7 @@ class WimaxcuDevice < WimaxDevice
   #
   def initialize(logicalName, deviceName)
     super(logicalName, deviceName)
-    @wimaxcu = '/usr/bin/wimaxcu'
+    @wimaxcu = findBinary('wimaxcu')
     @mode = @profile = @network = nil
   end
 

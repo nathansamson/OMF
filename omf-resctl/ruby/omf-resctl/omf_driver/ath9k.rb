@@ -29,6 +29,7 @@
 # This file defines the class Ath9kDevice which is a sub-class of 
 # WirelessDevice.
 #
+require 'omf-resctl/util'
 require 'omf-resctl/omf_driver/wireless'
 
 #
@@ -106,9 +107,11 @@ class Ath9kDevice < WirelessDevice
   def initialize(logicalName, deviceName)
     super(logicalName, deviceName)
     @driver = 'ath9k'
-    @iw = '/usr/sbin/iw'
-    @hostapd = '/usr/sbin/hostapd'
-    @wpasup = '/sbin/wpa_supplicant'
+    @iw = findBinary('iw')
+    @hostapd = findBinary('hostapd')
+    @iwconfig = findBinary('iwconfig')
+    @ifconfig = findBinary('ifconfig')
+    @wpasup = findBinary('wpa_supplicant')
     @apconf = "/tmp/hostapd.#{@deviceName}.conf"
     @appid = "/tmp/hostapd.#{@deviceName}.pid"
     @wpaconf = "/tmp/wpa.#{@deviceName}.conf"
@@ -150,13 +153,13 @@ class Ath9kDevice < WirelessDevice
         return nil if @channel.nil? || @essid.nil?
         clean = `#{@iw} dev #{@deviceName} del`
         cmd = "#{@iw} phy #{@baseDevice} interface add #{@deviceName} type adhoc ; "+
-              "/sbin/ifconfig #{deviceName} up ; "+
+              "#{@ifconfig} #{deviceName} up ; "+
               "#{@iw} dev #{@deviceName} ibss join #{@essid} #{FREQUENCY[@channel.to_i]}"
       when :monitor
         return nil if @channel.nil? || @essid.nil?
         clean = `#{@iw} dev #{@deviceName} del`
         cmd = "#{@iw} phy #{@baseDevice} interface add #{@deviceName} type monitor ; "+
-              "/sbin/ifconfig #{deviceName} up ; "+
+              "#{@ifconfig} #{deviceName} up ; "+
               "#{@iw} dev #{@deviceName} set freq #{FREQUENCY[@channel.to_i]}"
     else
       raise "Unknown mode '#{value}'. Should be 'master', 'managed', "+

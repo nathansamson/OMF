@@ -29,6 +29,7 @@
 # This file defines the class AtherosDevice which is a sub-class of 
 # WirelessDevice.
 #
+require 'omf-resctl/util'
 require 'omf-resctl/omf_driver/wireless'
 
 #
@@ -45,9 +46,9 @@ class AtherosDevice < WirelessDevice
   def initialize(logicalName, deviceName)
     super(logicalName, deviceName)
     @driver = 'ath_pci'
-    @wlanconfig = '/sbin/wlanconfig'
-    @iwconfig = '/sbin/iwconfig'
-    @iwpriv = '/sbin/iwpriv'
+    @wlanconfig = findBinary('wlanconfig')
+    @iwconfig = findBinary('iwconfig')
+    @iwpriv = findBinary('iwpriv')
     @toolVersion = getToolVersion
   end
 

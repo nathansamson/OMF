@@ -29,6 +29,7 @@
 # This file defines the class WirelessDevice, which is a sub-class of EthernetDevice.
 #
 #
+require 'omf-resctl/util'
 require 'omf-resctl/omf_driver/ethernet'
 
 #
@@ -48,6 +49,9 @@ class WirelessDevice < EthernetDevice
   def initialize(logicalName, deviceName)
     super(logicalName, deviceName)
     @essid = "ORBIT"
+    
+    @iwconfig = findBinary('iwconfig')
+    @modporbe = findBinary('modprobe')
 
     # monitor state
     Thread.new() {
@@ -75,7 +79,7 @@ class WirelessDevice < EthernetDevice
   # [Return] the Cell ID of this Device
   #
   def checkStatus
-    reply = `/sbin/iwconfig #{deviceName}`
+    reply = `#{@iwconfig} #{deviceName}`
     if ! $?.success?
       warn "Problems running iwconfig -- #{reply}"
       return
@@ -125,7 +129,7 @@ class WirelessDevice < EthernetDevice
     debug "activate: #{deviceName} #{driver} #{loaded?}"
     super()
     if (! loaded?)
-      reply = `/sbin/modprobe #{driver}`
+      reply = `#{@modprobe} #{driver}`
       if ! $?.success?
         error "Problems loading module '#{driver}' -- '#{reply}'"
         raise "Problems loading module #{driver} -- #{reply}"

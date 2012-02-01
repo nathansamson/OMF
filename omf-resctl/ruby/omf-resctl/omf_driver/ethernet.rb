@@ -29,6 +29,7 @@
 # This file defines the class EthernetDevice, which is a sub-class of Device.
 #
 #
+require 'omf-resctl/util'
 require 'omf-resctl/omf_driver/device'
 
 #
@@ -41,6 +42,7 @@ class EthernetDevice < Device
   #
   def initialize(logicalName, deviceName)
     super(logicalName, deviceName)
+    @ifconfig = findBinary('ifconfig')
   end
 
   #
@@ -54,20 +56,20 @@ class EthernetDevice < Device
     debug "looking for property '#{prop}' in ethernet"
     case prop
       when 'ip'
-       return "/sbin/ifconfig #{@deviceName} #{value} netmask 255.255.0.0"
+       return "#{@ifconfig} #{@deviceName} #{value} netmask 255.255.0.0"
       when 'up'
-       return "/sbin/ifconfig #{@deviceName} up"
+       return "#{@ifconfig} #{@deviceName} up"
       when 'down'
-       return "/sbin/ifconfig #{@deviceName} down"
+       return "#{@ifconfig} #{@deviceName} down"
       when 'netmask'
-        return "/sbin/ifconfig #{@deviceName} netmask #{value}"
+        return "#{@ifconfig} #{@deviceName} netmask #{value}"
       when 'mtu'
-        return "/sbin/ifconfig #{@deviceName} mtu #{value}"
+        return "#{@ifconfig} #{@deviceName} mtu #{value}"
       when 'mac'
-        return "/sbin/ifconfig #{@deviceName} hw ether #{value}"
+        return "#{@ifconfig} #{@deviceName} hw ether #{value}"
       when 'arp'
         dash = (value == 'true') ? '' : '-'
-        return "/sbin/ifconfig #{@deviceName} #{dash}arp"
+        return "#{@ifconfig} #{@deviceName} #{dash}arp"
       when 'forwarding'
         flag = (value == 'true') ? '1' : '0'
         return "echo #{flag} > /proc/sys/net/ipv4/conf/#{@deviceName}/forwarding"
@@ -159,12 +161,12 @@ class EthernetDevice < Device
     case prop
     when :mac
       match = /[.\da-fA-F]+\:[.\da-fA-F]+\:[.\da-fA-F]+\:[.\da-fA-F]+\:[.\da-fA-F]+\:[.\da-fA-F]+/
-      lines = IO.popen("/sbin/ifconfig #{@deviceName}", "r").readlines
+      lines = IO.popen("#{@ifconfig} #{@deviceName}", "r").readlines
       return lines[0][match] if (lines.length >= 2)
       return nil
     when :ip
       match = /[.\d]+\.[.\d]+\.[.\d]+\.[.\d]+/
-      lines = IO.popen("/sbin/ifconfig #{@deviceName}", "r").readlines
+      lines = IO.popen("#{@ifconfig} #{@deviceName}", "r").readlines
       return lines[1][match] if (lines.length >= 2)
       return nil
     else
