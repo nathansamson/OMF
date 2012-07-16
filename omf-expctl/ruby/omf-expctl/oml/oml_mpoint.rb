@@ -72,13 +72,13 @@ module OMF
           description = nil
           defRoot.elements.each { |el|
             case el.name
-            when 'description' : description = el.text
+            when 'description' then description = el.text
             when 'metric'
               name = type = description = nil
               el.attributes.each { |n, v|
                 case n
-                when 'id' : name = v
-                when 'type' : type = v
+                when 'id' then name = v
+                when 'type' then type = v
                 else
                   warn "Ignoring metric attribute '#{n}'"
                 end

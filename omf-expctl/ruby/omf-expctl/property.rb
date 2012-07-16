@@ -60,7 +60,7 @@ class Property
         warn "Ignoring element '#{el.name}'"
       end
     }
-    if isBinding : warn "NOT IMPLEMENTED: Resolving bindings from XML streams" end
+    if isBinding then warn "NOT IMPLEMENTED: Resolving bindings from XML streams" end
     p = Property.new(idred, obj, unit, isBinding)
     return p
   end

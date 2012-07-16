@@ -49,9 +49,9 @@ class AppProperty
     description = parameter = nil
     defRoot.elements.each { |el|
       case el.name
-      when 'name' : name = el.text
-      when 'parameter' : parameter = el.text
-      when 'description' : description = el.text
+      when 'name' then name = el.text
+      when 'parameter' then parameter = el.text
+      when 'description' then description = el.text
       else
         warn "Ignoring element '#{el.name}'"
       end

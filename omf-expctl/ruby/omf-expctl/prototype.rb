@@ -130,7 +130,9 @@ class Prototype
   # - bindings = a Hash with the bindings for local parameters
   #
   def instantiate(nodeSet, bindings)
-    if bindings == nil : bindings = Hash.new end
+    if bindings == nil
+        bindings = Hash.new
+    end
     # check if bindings contain unknown properties
     if (diff = bindings.keys - @properties.keys) != []
       raise "Unknown parameters '#{diff.join(', ')}'" \

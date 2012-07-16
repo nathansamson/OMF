@@ -329,12 +329,12 @@ class AppDefinition < MObject
     @name = appRoot.attributes['name']
     appRoot.elements.each { |el|
       case el.name
-      when 'url' : @uri = el.text
-      when 'name' : @name = el.text
-      when Version::VERSION_EL_NAME :  # @version = Version.from_xml(el)
-      when 'copyright' : @copyright = el.text;
-      when 'shortDescription' : @shortDescription = el.text;
-      when 'description' : @description = el.text;
+      when 'url' then @uri = el.text
+      when 'name' then @name = el.text
+      when Version::VERSION_EL_NAME then  # @version = Version.from_xml(el)
+      when 'copyright' then @copyright = el.text;
+      when 'shortDescription' then @shortDescription = el.text;
+      when 'description' then @description = el.text;
 
       when 'properties'
         el.elements.each { |el|
@@ -348,7 +348,7 @@ class AppDefinition < MObject
           @measurements[m.id] = m
         }
 
-      when 'path' : @path = el.text;
+      when 'path' then @path = el.text;
       else
         warn "Ignoring element '#{el.name}'"
       end
