@@ -702,6 +702,8 @@ class OMF::EC::Node < MObject
   def to_s()
     return "#{@nodeID}"
   end
+  
+  alias :to_str :to_s
 
   private
 
