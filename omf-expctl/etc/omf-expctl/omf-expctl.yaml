@@ -62,7 +62,12 @@
         # directory holding the public keys of your OMF peers
         :public_key_dir: '~/.omf-expctl/peer_keys'
         
-        :type: 'xmpp'
+        
+        
+        :web:
+            :host: 'glenn-computer.local:5054'
+
+        :type: 'xmpp' 
         :xmpp:
           # Address of the server to use as gateway for PubSub communication
           :pubsub_gateway: 'omf-am.local'
