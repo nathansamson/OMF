@@ -141,7 +141,7 @@ module OConfig
   # 
   # [Return] the text content of the file, with its mimeType
   #
-  def self.load(uri, evalRuby = false, default_ext = '.rb')
+  def self.load(uri, evalRuby = false, default_ext = '.rb', processor = nil)
     # Find the file to load...
     file = self.findFile(uri)
     if file == nil
@@ -157,8 +157,8 @@ module OConfig
     str = File.new(file).read()
     if evalRuby
       begin
-        eval(str, OMF::EC::CmdContext.instance._binding(),
-             uri)
+        processor = OMF::EC::CmdContext.instance._binding() unless processor
+        eval(str, processor, uri)
       rescue Exception => ex
         if ex.kind_of?(OEDLException)
           # Remove the 1st backtrace line (i.e. the file implementing the cmd)

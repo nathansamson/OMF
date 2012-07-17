@@ -96,6 +96,18 @@ def parseOptions()
   #p @options
 end
 
+def do_exec app, args, ctn = false
+    omf_command = "/usr/bin/ruby -I#{@ec_path} -I/usr/share/omf-common#{@version} #{@ec_path}#{app} #{args.join(' ')}"
+    puts "DEBUG: Executing '#{omf_command}'" if @options[:debug]
+    ENV['GEM_PATH'] = @gempath
+    
+    if ctn
+        system omf_command
+    else
+        exec omf_command
+    end
+end
+
 def run(cmd)
   args=""
 
@@ -168,10 +180,19 @@ def run(cmd)
      exit 1
   end
 
-  omf_command = "/usr/bin/ruby -I#{@ec_path} -I/usr/share/omf-common#{@version} #{@ec_path}#{app} #{args.join(' ')}"
-  puts "DEBUG: Executing '#{omf_command}'" if @options[:debug]
-  ENV['GEM_PATH'] = @gempath
-  exec omf_command
+  if cmd == "exec"
+    args_with_prepare_experiment = ['confine:prepare', '-- --confine_experiment_file']
+    args_with_prepare_experiment << args
+    puts args_with_prepare_experiment
+    
+    do_exec app, args_with_prepare_experiment, true
+    
+    puts "PREPARED EXPERIMENT..."
+    
+    #do_exec app, args
+  else
+    do_exec app, args
+  end
 end
 
 # display help for command 'cmd'

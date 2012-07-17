@@ -84,9 +84,62 @@ class EmptyGroup
   def method_missing(name, *args, &block) return true end
 end
 
+module OMF::EC
+  module NodeSetHelper
+    def selectNodeSet groupName, selector
+      if selector.kind_of?(ExperimentProperty)
+        selector = selector.value
+      end
+
+      if (selector != nil)
+        # What kind of selector do we have?
+        if selector.kind_of?(String)
+          begin
+            # Selector is the name of an existing Topology (e.g. "myTopo")
+            topo = Topology[selector]
+            ns = BasicNodeSet.new(groupName, topo)
+    	# This raises an exception if Selector does not refer to an existing
+            # Topology
+          rescue
+            # Selector is a comma-separated list of existing resources
+            # These resources are identified by their HRNs
+            # e.g. "node1, node2, node3"
+            tname = "-:topo:#{groupName}"
+            topo = Topology.create(tname, selector.split(","))
+            ns = BasicNodeSet.new(groupName, topo)
+          end
+        # Selector is an Array of String
+        elsif selector.kind_of?(Array) && selector[0].kind_of?(String)
+          begin
+            # Selector is an array of group names
+            # Thus we are creating a Group or Groups
+            ns = GroupNodeSet.new(groupName, selector)
+            # This raises an exception if Selector contains a name, which does
+            # not refer to an existing defined Group
+          rescue
+            # Selector is an array of resource names, which are identified by their
+            # HRNs, e.g. ['node1','node2','node3']
+            tname = "-:topo:#{groupName}"
+            topo = Topology.create(tname, selector)
+            ns = BasicNodeSet.new(groupName, topo)
+          end
+        else
+          raise "Unknown node set declaration '#{selector}: #{selector.class}'"
+        end
+      else
+        ns = BasicNodeSet.new(groupName)
+      end
+      
+      ns
+    end
+  end
+end
+
 
 module OMF::EC
   module Commands
+
+    include OMF::EC::NodeSetHelper
 
     DEPRECATED = ["whenAll", "whenAllUp", "whenAllEqual", "whenAllInstalled"]
 
@@ -182,48 +235,7 @@ module OMF::EC
         raise "Node set '#{groupName}' already defined. Choose different name."
       end
 
-      if selector.kind_of?(ExperimentProperty)
-        selector = selector.value
-      end
-
-      if (selector != nil)
-        # What kind of selector do we have?
-        if selector.kind_of?(String)
-          begin
-            # Selector is the name of an existing Topology (e.g. "myTopo")
-            topo = Topology[selector]
-            ns = BasicNodeSet.new(groupName, topo)
-    	# This raises an exception if Selector does not refer to an existing
-            # Topology
-          rescue
-            # Selector is a comma-separated list of existing resources
-            # These resources are identified by their HRNs
-            # e.g. "node1, node2, node3"
-            tname = "-:topo:#{groupName}"
-            topo = Topology.create(tname, selector.split(","))
-            ns = BasicNodeSet.new(groupName, topo)
-          end
-        # Selector is an Array of String
-        elsif selector.kind_of?(Array) && selector[0].kind_of?(String)
-          begin
-            # Selector is an array of group names
-            # Thus we are creating a Group or Groups
-            ns = GroupNodeSet.new(groupName, selector)
-            # This raises an exception if Selector contains a name, which does
-            # not refer to an existing defined Group
-          rescue
-            # Selector is an array of resource names, which are identified by their
-            # HRNs, e.g. ['node1','node2','node3']
-            tname = "-:topo:#{groupName}"
-            topo = Topology.create(tname, selector)
-            ns = BasicNodeSet.new(groupName, topo)
-          end
-        else
-          raise "Unknown node set declaration '#{selector}: #{selector.class}'"
-        end
-      else
-        ns = BasicNodeSet.new(groupName)
-      end
+      ns = selectNodeSet groupName, selector
 
       return RootNodeSetPath.new(ns, nil, nil, block)
     end
@@ -697,7 +709,6 @@ module OMF::EC
       m = m.select do |n| !n.start_with? '_' end
       m.sort.join(" ")
     end
-
   end
 end
 

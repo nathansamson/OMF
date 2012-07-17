@@ -30,6 +30,8 @@
 # is primarily used as a singleton
 #
 
+require 'confine'
+
 require 'omf-common/mobject'
 require 'omf-expctl/traceState'
 require 'optparse'
@@ -51,6 +53,8 @@ class Experiment
   @@sliceID = nil # default slice ID will be setup by EC based on its config file  
   @@domain = nil
   @@is_running = false
+  
+  @@preparing = false
 
   attr_reader :domain
 
@@ -99,6 +103,7 @@ class Experiment
   def Experiment.load(uri)
     MObject.info("Experiment", "load ", uri)
     TraceState.experiment(:load, uri)
+    
     obj, type = OConfig.load(uri, true)
     if type == "text/xml"
       raise "Loading XML file '#{uri}' not implemented."
@@ -263,10 +268,22 @@ class Experiment
     return result
   end
 
+  def Experiment.prepare!
+    @@preparing = true
+  end
+  
+  def Experiment.prepare?
+    @@preparing
+  end
+
   #
   # Start the Experiment
   #
   def Experiment.start
+    if Experiment.prepare?
+        return
+    end
+  
     @@is_running = true
     TraceState.experiment(:id, @@expID)
 
@@ -400,6 +417,13 @@ class ExperimentProperty < MObject
   # Holds all observers on property creation and modifications
   @@observers = []
 
+  def self.clear
+    @@properties = Hash.new
+    @@observers.each { |proc|
+      proc.call(:clear)
+    }
+  end
+
   #
   # Returns a given property
   # - name =nameof the property to return
@@ -444,6 +468,7 @@ class ExperimentProperty < MObject
  Experiment Property '#{name}' is not a valid Ruby method name.") if /[@$"]/ =~ name.to_sym.inspect
     p = nil
     if (p = @@properties[name]) != nil
+      puts p.inspect
       p.value = value if value != nil
       p.description = description if description != nil
     else
