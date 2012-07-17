@@ -55,6 +55,7 @@ class Experiment
   @@is_running = false
   
   @@preparing = false
+  @@node_prefix = nil
 
   attr_reader :domain
 
@@ -274,6 +275,14 @@ class Experiment
   
   def Experiment.prepare?
     @@preparing
+  end
+  
+  def Experiment.node_prefix
+    @@node_prefix
+  end
+  
+  def Experiment.node_prefix= value
+    @@node_prefix = value
   end
 
   #

@@ -110,6 +110,10 @@ class NodeHandler < MObject
   # Maximum Number of port to try for the builtin Web Server
   #
   MAXWEBTRY = 1000
+  
+  def self.PREFIX_FILE
+    '.omf-confine-prefix'
+  end
 
   #
   # Pair of Mutex used to implement the NodeHandler's execution loop
@@ -563,6 +567,10 @@ class NodeHandler < MObject
     # Setup the slice of this EC
     Experiment.sliceID = OConfig[:ec_config][:slice] if !Experiment.sliceID 
     raise "No slice ID from command line or config file!" if !Experiment.sliceID 
+
+    if File.exist? NodeHandler.PREFIX_FILE
+        Experiment.node_prefix = File.open(NodeHandler.PREFIX_FILE).read
+    end
 
     # Start performace monitor
     # cdw: commented out because it doesn't work with latest OML4R

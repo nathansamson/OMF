@@ -181,6 +181,10 @@ def run(cmd)
   end
 
   if cmd == "exec"
+    if File.exist? '.omf-confine-prefix'
+        File.unlink '.omf-confine-prefix'
+    end
+  
     args_with_prepare_experiment = ['confine:prepare', '-- --confine_experiment_file']
     args_with_prepare_experiment << args
     puts args_with_prepare_experiment
@@ -189,7 +193,7 @@ def run(cmd)
     
     puts "PREPARED EXPERIMENT..."
     
-    #do_exec app, args
+    do_exec app, args
   else
     do_exec app, args
   end

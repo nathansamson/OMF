@@ -96,7 +96,8 @@ module OMF::EC
         if selector.kind_of?(String)
           begin
             # Selector is the name of an existing Topology (e.g. "myTopo")
-            topo = Topology[selector]
+            
+            topo = Topology[prefix selector]
             ns = BasicNodeSet.new(groupName, topo)
     	# This raises an exception if Selector does not refer to an existing
             # Topology
@@ -105,7 +106,7 @@ module OMF::EC
             # These resources are identified by their HRNs
             # e.g. "node1, node2, node3"
             tname = "-:topo:#{groupName}"
-            topo = Topology.create(tname, selector.split(","))
+            topo = Topology.create(tname, selector.split(",").map { |s| prefix s} )
             ns = BasicNodeSet.new(groupName, topo)
           end
         # Selector is an Array of String
@@ -120,7 +121,7 @@ module OMF::EC
             # Selector is an array of resource names, which are identified by their
             # HRNs, e.g. ['node1','node2','node3']
             tname = "-:topo:#{groupName}"
-            topo = Topology.create(tname, selector)
+            topo = Topology.create(tname, selector.map { |s| prefix s })
             ns = BasicNodeSet.new(groupName, topo)
           end
         else
@@ -131,6 +132,15 @@ module OMF::EC
       end
       
       ns
+    end
+    
+    private
+    def prefix name
+        if Experiment.node_prefix
+            Experiment.node_prefix + "." + name
+        else
+            name
+        end
     end
   end
 end
