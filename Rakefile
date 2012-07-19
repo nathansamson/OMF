@@ -1,4 +1,4 @@
-task :default => 'omf_dev:install_omf_dev'
+task :default => 'omf_dev:install'
 
 OMF_VERSION = '5.4'
 ROOT = File.expand_path(File.dirname(__FILE__))

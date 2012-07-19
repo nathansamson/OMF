@@ -5,7 +5,7 @@
 #
 ---
 :xmpp:
-  :server: "norbit.npc.nicta.com.au"
+  :server: "omf-am.local"
   :user: "aggmgr"
   :password: "123"
   :port: 5222
