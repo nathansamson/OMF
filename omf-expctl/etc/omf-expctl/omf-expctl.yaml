@@ -51,7 +51,7 @@
 
       # URI to the OML server to use for this EC 
       # (can be overwritten on the EC command line)
-      :omluri: 'tcp:omf-am.local:3003'
+      :omluri: 'tcp:143.129.77.54:3003'
 
       :communicator:
       
@@ -64,8 +64,10 @@
         
         
         
-        :web:
-            :host: 'glenn-computer.local:5054'
+#        :web:
+ #           :host: 'glenn-computer.local:5054'
+
+
 
         :type: 'xmpp' 
         :xmpp:
@@ -86,16 +88,16 @@
           #:pubsub_pwd: 'my_EC_password'
           # set this to "true" if you have a DNS SRV record pointing to the
           # real pubsub server hostname
-          :pubsub_use_dnssrv: false
+#          :pubsub_use_dnssrv: false
           
       # AM contact details. By default, the AM is contacted through the EC's XMPP
       # connection as specified in the ':communicator:' section above. In this
       # ':services:' section, you can specify additional AM contact details.
       # Supported protocols are XMPP and HTTP for legacy services. 
-      # :services:
-      #   -
-      #     :type: :http
-      #     :uri: 'http://norbit.npc.nicta.com.au:5054'
+  #      :services:
+   #       -
+    #        :type :http
+     #       :uri  'http://glenn-computer.local:5054'
         # -
         #   :type: :xmpp
         #   :uri: 'norbit.npc.nicta.com.au'

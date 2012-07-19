@@ -180,6 +180,8 @@ module OMF
       @@services[m] = service
       raise "Couldn't find a provider for service '#{m}' in OMF::Services module" if service.nil?
       service.modifiers = args
+      
+      puts service.inspect
       service
     end
 
@@ -261,6 +263,7 @@ module OMF
         endpoints = Services.endpoints
         endpoint = Endpoint.find(domain[:type], domain[:uri],
                                  modifiers, name.to_s, m.to_s, *args)
+        puts endpoint.inspect
         endpoint.make_request(name, m, *args)
       end
     end # class Service

@@ -190,7 +190,7 @@ class ECCommunicator < OmfCommunicator
   # this experiment.
   #
   def send_experiment_announce()
-    cmd = create_message(:cmdtype => :EXPERIMENT_NEW, :slice_id => @@sliceID,
+    cmd = create_message(:cmdtype => :ENROLL, :slice_id => @@sliceID,
                           :experiment_id => @@expID, :address => @my_addr.generate_address(true))
     @@announceThread = Thread.new do
       while true do
