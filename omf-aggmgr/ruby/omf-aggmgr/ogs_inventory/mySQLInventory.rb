@@ -321,6 +321,19 @@ ALLTESTBEDS_QS
     result
   end
 
+  def getTestbedId(name)
+  qs = <<TESTBEDID_QS
+SELECT id FROM testbeds
+WHERE name='#{name}';
+TESTBEDID_QS
+
+    id = nil
+    runQuery(qs) { |result_id|
+      id = result_id
+    }
+    return id
+  end
+
   def getAllNodes
   qs = <<ALLNODES_QS
 SELECT hostname,hrn,control_mac,control_ip,x,y,z,disk,testbeds.name
@@ -384,7 +397,7 @@ ALLNODES_QS
   def addNode(node)
     qs = "INSERT INTO nodes (#{node.keys.join(',')}) VALUES ('#{node.values.join('\',\'')}');"
     MObject.debug(qs)
-    return true
+   # return true # WHY THE HECK?
     begin
       @my.query(qs)
     rescue MysqlError => e
@@ -405,6 +418,36 @@ ALLNODES_QS
       MObject.debug err_str
     end
     return @my.affected_rows > 0
+  end
+
+  def addLocation(location)
+    qs = "INSERT INTO locations (#{location.keys.join(',')}) VALUES ('#{location.values.join('\',\'')}');"
+    MObject.debug(qs)
+    begin
+      @my.query(qs)
+    rescue MysqlError => e
+      puts "Inventory - Could not execute query in addLocation: '#{qs}'"
+      err_str = "Inventory - Could not execute query in addLocation: '#{qs}'"
+      p err_str
+      MObject.debug err_str
+    end
+    return @my.affected_rows > 0
+  end
+
+  def getLocationId(name, x, y, z)
+    qs = <<LOCATIONID_QS
+SELECT id FROM `locations`
+WHERE name=\'#{name}\'
+AND x=\'#{x}\'
+AND y=\'#{y}\'
+AND z=\'#{z}\';
+LOCATIONID_QS
+
+    id = nil
+    runQuery(qs) { |result_id|
+      id = result_id
+    }
+    return id
   end
 
 end
