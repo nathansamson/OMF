@@ -290,6 +290,7 @@ class Experiment
   #
   def Experiment.start
     if Experiment.prepare?
+        puts "PREPARING EXPERIMENT..."
         return
     end
   

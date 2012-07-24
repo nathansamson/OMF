@@ -35,7 +35,7 @@ require 'omf-common/omfVersion'
 class OmfPubSubAddress < OmfAddress
 
   # Names for constant PubSub nodes
-  PUBSUB_ROOT = "OMF"
+  PUBSUB_ROOT = "OMF_#{OMF::Common.MM_VERSION}"
   RESOURCE = "resources"
   SYSTEM = "system"
 

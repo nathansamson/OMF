@@ -263,7 +263,6 @@ module OMF
         endpoints = Services.endpoints
         endpoint = Endpoint.find(domain[:type], domain[:uri],
                                  modifiers, name.to_s, m.to_s, *args)
-        puts endpoint.inspect
         endpoint.make_request(name, m, *args)
       end
     end # class Service

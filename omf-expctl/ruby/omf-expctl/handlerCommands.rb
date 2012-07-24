@@ -137,7 +137,7 @@ module OMF::EC
     private
     def prefix name
         if Experiment.node_prefix
-            Experiment.node_prefix + "." + name
+            name + "." + Experiment.node_prefix
         else
             name
         end

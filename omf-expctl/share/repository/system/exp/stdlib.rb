@@ -49,6 +49,10 @@ ResetCount = {}
 #
 everyNS('*', 10) { |ns|
 
+  if Experiment.prepare?
+    false
+  else
+
   # First check if the experiment has not been interrupted
   #exp_status = Experiment.state("status/text()")
   #return true if allEqual(exp_status, "INTERRUPTED")
@@ -118,5 +122,6 @@ everyNS('*', 10) { |ns|
     # We have not finished adding nodes to this experiment, 
     # loop and check again in 10sec
     true
+  end
   end
 }
