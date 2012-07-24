@@ -427,13 +427,6 @@ class ExperimentProperty < MObject
   # Holds all observers on property creation and modifications
   @@observers = []
 
-  def self.clear
-    @@properties = Hash.new
-    @@observers.each { |proc|
-      proc.call(:clear)
-    }
-  end
-
   #
   # Returns a given property
   # - name =nameof the property to return
@@ -478,7 +471,6 @@ class ExperimentProperty < MObject
  Experiment Property '#{name}' is not a valid Ruby method name.") if /[@$"]/ =~ name.to_sym.inspect
     p = nil
     if (p = @@properties[name]) != nil
-      puts p.inspect
       p.value = value if value != nil
       p.description = description if description != nil
     else

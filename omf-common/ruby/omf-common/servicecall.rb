@@ -181,7 +181,6 @@ module OMF
       raise "Couldn't find a provider for service '#{m}' in OMF::Services module" if service.nil?
       service.modifiers = args
       
-      puts service.inspect
       service
     end
 
